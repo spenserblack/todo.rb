@@ -11,12 +11,12 @@ jobs:
     name: Check Format
     runs-on: ubuntu-latest
 
-  steps:
-    - uses: actions/checkout@v3
-    - name: Setup Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        bundler-cache: true
-    - run: bundle install
-    - name: Check Format
-      run: bundle exec rubocop
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: bundle install
+      - name: Check Format
+        run: bundle exec rubocop
