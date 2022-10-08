@@ -10,5 +10,5 @@
 # See https://docs.rubocop.org/rubocop/configuration
 AllCops:
   NewCops: enable
-  Include:
-    - hello-world
+  Exclude:
+    - 'bin/*'
