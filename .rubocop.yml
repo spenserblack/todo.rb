@@ -14,3 +14,4 @@ AllCops:
   NewCops: enable
   Exclude:
     - 'bin/*'
+    - 'vendor/**/*.rb'
