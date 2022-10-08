@@ -16,3 +16,12 @@ AllCops:
   Exclude:
     - 'bin/*'
     - 'vendor/**/*'
+  Include:
+    - 'exe/*'
+    - '**/*.rb'
+    - '**/*.gemfile'
+    - '**/*.gemspec'
+    - '**/*.rake'
+    - '**/*.ru'
+    - '**/Gemfile'
+    - '**/Rakefile'
