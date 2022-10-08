@@ -20,7 +20,7 @@ class Todo
         !includes
       end
 
-      new(new_items, new_completed_items)
+      TodoList.new(new_items, new_completed_items)
     end
 
     # Completes one or more items.
