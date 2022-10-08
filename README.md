@@ -1,5 +1,7 @@
 # todo.rb
 
+[![codecov](https://codecov.io/gh/spenserblack/todo.rb/branch/main/graph/badge.svg?token=OfJG8wqItt)](https://codecov.io/gh/spenserblack/todo.rb)
+
 This is a simple CLI application that manages a `.todo.yaml` file in your home
 directory. There are two subcommands:
 
