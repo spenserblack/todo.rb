@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'todo'
 
 RSpec.describe Todo::TodoList, '#complete' do
