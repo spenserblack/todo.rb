@@ -1,9 +1,9 @@
 # frozen_string_literal: true
+
 require 'yaml'
 
+# Writes and reads TODOs to and from YAML files
 class Todo
-  HOME = ENV['HOME']
-
   # TodoList represents a list of items to do, and those that are done.
   class TodoList
     attr_reader :items, :completed_items
@@ -37,7 +37,7 @@ class Todo
   end
 
   def todo_dir
-    File.join HOME, '.todo.rb'
+    File.join Dir.home, '.todo.rb'
   end
 
   def filename(name)
@@ -46,9 +46,7 @@ class Todo
 
   def load_list(name)
     Dir.mkdir tod_dir unless Dir.exist? todo_dir
-    unless File.exist? filename(name)
-      File.write filename(name), YAML.dump(TodoList.new([]).to_h)
-    end
+    File.write filename(name), YAML.dump(TodoList.new([]).to_h) unless File.exist? filename(name)
     list = YAML.load_file(filename(name))
     TodoList.new(list[:todo] || [], list[:done] || [])
   end
