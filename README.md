@@ -1,5 +1,6 @@
 # todo.rb
 
+[![CI](https://github.com/spenserblack/todo.rb/actions/workflows/ci.yml/badge.svg)](https://github.com/spenserblack/todo.rb/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/spenserblack/todo.rb/branch/main/graph/badge.svg?token=OfJG8wqItt)](https://codecov.io/gh/spenserblack/todo.rb)
 
 This is a simple CLI application that manages a `.todo.yaml` file in your home
