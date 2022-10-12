@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'fileutils'
 require 'yaml'
 
 # Writes and reads TODOs to and from YAML files
@@ -37,26 +38,34 @@ class Todo
     end
 
     def to_h
-      { todo: items, done: completed_items }
+      { 'todo' => items, 'done' => completed_items }
+    end
+
+    def to_yaml
+      YAML.dump(to_h)
+    end
+
+    def to_s
+      to_yaml
     end
   end
 
-  def todo_dir
-    File.join Dir.home, '.todo.rb'
+  def self.todo_dir
+    File.join Dir.home, '.todo'
   end
 
-  def filename(name)
+  def self.filename(name)
     File.join todo_dir, "#{name}.yaml"
   end
 
-  def load_list(name)
-    Dir.mkdir tod_dir unless Dir.exist? todo_dir
+  def self.load_list(name)
+    FileUtils.mkdir_p todo_dir
     File.write filename(name), YAML.dump(TodoList.new([]).to_h) unless File.exist? filename(name)
     list = YAML.load_file(filename(name))
-    TodoList.new(list[:todo] || [], list[:done] || [])
+    TodoList.new(list['todo'] || [], list['done'] || [])
   end
 
-  def save_list(name, list)
+  def self.save_list(name, list)
     YAML.dump(list.to_h, File.open(filename(name), 'w'))
   end
 end

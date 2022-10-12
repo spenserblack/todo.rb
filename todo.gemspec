@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.email                  = ['spenserblack01@gmail.com']
 
   spec.summary                = 'A simple todo list manager'
-  spec.description            = 'A simple todo list manager'
+  spec.description            = 'Manages multiple todo lists in $HOME/.todo'
 
   spec.homepage               = 'https://github.com/spenserblack/todo.rb'
   spec.license                = 'MIT'

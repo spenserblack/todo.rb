@@ -1,0 +1,78 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require 'todo'
+
+HELP_TEXT = <<~HELP
+  Subcommands:
+    do    :                 Add a new item to a todo list.
+    did   :                 Complete an item in a todo list.
+    show  :                 Show a todo list.
+HELP
+
+global_command = OptionParser.new do |opts|
+  opts.banner = 'Usage: todo [options] [<subcommand> [options] [args]]'
+  opts.separator ''
+  opts.separator HELP_TEXT
+end
+
+subcommands = {
+  'do' => OptionParser.new do |opts|
+    opts.banner = 'todo do <name> <text...>'
+    opts.separator ''
+    opts.separator 'Add a new item to the named todo list.'
+    opts.separator 'Multiple words are joined with spaces (like `echo`)'
+    opts.on('-h', '--help', 'Show this help message') do
+      puts opts
+      exit
+    end
+  end,
+  'did' => OptionParser.new do |opts|
+    opts.banner = 'todo did [options] <name> <index> [<index> ...]'
+    opts.separator ''
+    opts.separator 'Complete one or more items in the named todo list.'
+    opts.on('-h', '--help', 'Show this help message') do
+      puts opts
+      exit
+    end
+  end,
+  'show' => OptionParser.new do |opts|
+    opts.banner = 'todo show [options] <name>'
+    opts.separator ''
+    opts.separator 'Show the named todo list.'
+    opts.on('-h', '--help', 'Show this help message') do
+      puts opts
+      exit
+    end
+  end
+}
+
+global_command.order!
+subcommand = ARGV.shift
+if subcommand.nil?
+  puts global_command
+  exit 1
+end
+subcommands[subcommand]&.order!
+
+case subcommand
+when 'do'
+  name = ARGV.shift
+  text = ARGV.join(' ')
+  todo = Todo.load_list(name)
+  todo.add!(text)
+  Todo.save_list(name, todo)
+when 'did'
+  name = ARGV.shift
+  indices = ARGV.map(&:to_i)
+  todo = Todo.load_list(name)
+  todo.complete!(*indices)
+  Todo.save_list(name, todo)
+when 'show'
+  name = ARGV.shift
+  todo = Todo.load_list(name)
+  puts todo
+else
+  puts global_command
+end
