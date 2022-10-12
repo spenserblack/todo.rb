@@ -8,12 +8,15 @@ This is a simple CLI application that manages a todo lists in YAML format in fil
 
 - `todo do <name> <text...>`
 - `todo did <name> <index>`
+- `todo list`
 - `todo show <name>`
 
 `todo do` will take the name of a todo list and one or more strings as arguments (like `echo`),
 and add a new item to `$HOME/.todo/<name>.yaml`.
 
 `todo did` allows you to complete todo list items.
+
+`todo list` shows all existing todo lists.
 
 ## Installation
 
