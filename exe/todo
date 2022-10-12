@@ -5,8 +5,9 @@ require 'optparse'
 require 'tty-prompt'
 require 'todo'
 
-prompt = TTY::Prompt.new
+PROMPT = TTY::Prompt.new
 
+# Configuration
 HELP_TEXT = <<~HELP
   Subcommands:
     do    :                 Add a new item to a todo list.
@@ -15,13 +16,13 @@ HELP_TEXT = <<~HELP
     show  :                 Show a todo list.
 HELP
 
-global_command = OptionParser.new do |opts|
+GLOBAL_COMMAND = OptionParser.new do |opts|
   opts.banner = 'Usage: todo [options] [subcommand [options] [args]]'
   opts.separator ''
   opts.separator HELP_TEXT
 end
 
-subcommands = {
+SUBCOMMANDS = {
   'do' => OptionParser.new do |opts|
     opts.banner = 'todo do <name> <text...>'
     opts.separator ''
@@ -59,12 +60,17 @@ subcommands = {
       exit
     end
   end
-}
+}.freeze
 
-global_command.order!
+def prompt_subcommand
+  PROMPT.select('Select a subcommand', SUBCOMMANDS.keys)
+end
+
+# CLI Parsing / main logic
+GLOBAL_COMMAND.order!
 subcommand = ARGV.shift
-subcommand = prompt.select('Select a subcommand:', subcommands.keys) if subcommand.nil?
-subcommands[subcommand]&.order!
+subcommand = prompt_subcommand if subcommand.nil?
+SUBCOMMANDS[subcommand]&.order!
 
 case subcommand
 when 'do'
