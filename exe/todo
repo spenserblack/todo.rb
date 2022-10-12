@@ -52,7 +52,7 @@ SUBCOMMANDS = {
     end
   end,
   'show' => OptionParser.new do |opts|
-    opts.banner = 'todo show [options] <name>'
+    opts.banner = 'todo show [options] [name]'
     opts.separator ''
     opts.separator 'Show the named todo list.'
     opts.on('-h', '--help', 'Show this help message') do
