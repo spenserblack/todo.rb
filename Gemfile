@@ -2,6 +2,8 @@
 
 source 'https://rubygems.org'
 
+gemspec
+
 group :development do
   gem 'rake', '~> 13.0', require: false
   gem 'rubocop', '~> 1.36', require: false

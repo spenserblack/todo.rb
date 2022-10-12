@@ -13,6 +13,8 @@ Gem::Specification.new do |spec|
   spec.license                = 'MIT'
   spec.required_ruby_version  = Gem::Requirement.new('>= 2.7.0')
 
+  spec.add_dependency 'tty-prompt', '~> 0.23.1'
+
   # spec.metadata['allowed_push_host'] = '' # TODO: Set?
 
   spec.metadata['homepage_uri'] = spec.homepage

@@ -2,8 +2,12 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'tty-prompt'
 require 'todo'
 
+PROMPT = TTY::Prompt.new
+
+# Configuration
 HELP_TEXT = <<~HELP
   Subcommands:
     do    :                 Add a new item to a todo list.
@@ -12,15 +16,15 @@ HELP_TEXT = <<~HELP
     show  :                 Show a todo list.
 HELP
 
-global_command = OptionParser.new do |opts|
-  opts.banner = 'Usage: todo [options] [<subcommand> [options] [args]]'
+GLOBAL_COMMAND = OptionParser.new do |opts|
+  opts.banner = 'Usage: todo [options] [subcommand [options] [args]]'
   opts.separator ''
   opts.separator HELP_TEXT
 end
 
-subcommands = {
+SUBCOMMANDS = {
   'do' => OptionParser.new do |opts|
-    opts.banner = 'todo do <name> <text...>'
+    opts.banner = 'todo do [name] [text...]'
     opts.separator ''
     opts.separator 'Add a new item to the named todo list.'
     opts.separator 'Multiple words are joined with spaces (like `echo`)'
@@ -30,7 +34,7 @@ subcommands = {
     end
   end,
   'did' => OptionParser.new do |opts|
-    opts.banner = 'todo did [options] <name> <index> [<index> ...]'
+    opts.banner = 'todo did [options] [name] [index...]'
     opts.separator ''
     opts.separator 'Complete one or more items in the named todo list.'
     opts.on('-h', '--help', 'Show this help message') do
@@ -48,7 +52,7 @@ subcommands = {
     end
   end,
   'show' => OptionParser.new do |opts|
-    opts.banner = 'todo show [options] <name>'
+    opts.banner = 'todo show [options] [name]'
     opts.separator ''
     opts.separator 'Show the named todo list.'
     opts.on('-h', '--help', 'Show this help message') do
@@ -56,33 +60,62 @@ subcommands = {
       exit
     end
   end
-}
+}.freeze
 
-global_command.order!
-subcommand = ARGV.shift
-if subcommand.nil?
-  puts global_command
-  exit 1
+def prompt_subcommand
+  PROMPT.select('Select a subcommand', SUBCOMMANDS.keys)
 end
-subcommands[subcommand]&.order!
+
+def prompt_name
+  PROMPT.select('Select a todo list', Todo.find_lists)
+end
+
+def prompt_todo_text
+  PROMPT.ask('What do you need to do?')
+end
+
+def prompt_todo_indices(todo_list)
+  PROMPT.multi_select 'What did you do?' do |menu|
+    todo_list.items.each_with_index do |todo, index|
+      menu.choice todo, index
+    end
+  end
+end
+
+# CLI Parsing / main logic
+GLOBAL_COMMAND.order!
+subcommand = ARGV.shift
+subcommand = prompt_subcommand if subcommand.nil?
+SUBCOMMANDS[subcommand]&.order!
 
 case subcommand
 when 'do'
   name = ARGV.shift
-  text = ARGV.join(' ')
+  name = prompt_name if name.nil?
+  text = if ARGV.empty?
+           prompt_todo_text
+         else
+           ARGV.join(' ')
+         end
   todo = Todo.load_list(name)
   todo.add!(text)
   Todo.save_list(name, todo)
 when 'did'
   name = ARGV.shift
-  indices = ARGV.map(&:to_i)
+  name = prompt_name if name.nil?
   todo = Todo.load_list(name)
+  indices = if ARGV.empty?
+              prompt_todo_indices(todo)
+            else
+              ARGV.map(&:to_i)
+            end
   todo.complete!(*indices)
   Todo.save_list(name, todo)
 when 'list'
   puts(Todo.find_lists)
 when 'show'
   name = ARGV.shift
+  name = prompt_name if name.nil?
   todo = Todo.load_list(name)
   puts todo
 else
