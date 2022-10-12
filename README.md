@@ -18,6 +18,8 @@ and add a new item to `$HOME/.todo/<name>.yaml`.
 
 `todo list` shows all existing todo lists.
 
+`todo show` shows the contents of a todo list.
+
 ## Installation
 
 ```bash
