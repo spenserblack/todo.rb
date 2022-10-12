@@ -15,6 +15,8 @@ and add a new item to `$HOME/.todo/<name>.yaml`.
 
 `todo did` allows you to complete todo list items.
 
+`todo show` shows the contents of a todo list.
+
 ## Installation
 
 ```bash
