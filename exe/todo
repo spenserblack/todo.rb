@@ -2,7 +2,10 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'tty-prompt'
 require 'todo'
+
+prompt = TTY::Prompt.new
 
 HELP_TEXT = <<~HELP
   Subcommands:
@@ -13,7 +16,7 @@ HELP_TEXT = <<~HELP
 HELP
 
 global_command = OptionParser.new do |opts|
-  opts.banner = 'Usage: todo [options] [<subcommand> [options] [args]]'
+  opts.banner = 'Usage: todo [options] [subcommand [options] [args]]'
   opts.separator ''
   opts.separator HELP_TEXT
 end
@@ -60,10 +63,7 @@ subcommands = {
 
 global_command.order!
 subcommand = ARGV.shift
-if subcommand.nil?
-  puts global_command
-  exit 1
-end
+subcommand = prompt.select('Select a subcommand:', subcommands.keys) if subcommand.nil?
 subcommands[subcommand]&.order!
 
 case subcommand
