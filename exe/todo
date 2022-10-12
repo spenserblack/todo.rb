@@ -24,7 +24,7 @@ end
 
 SUBCOMMANDS = {
   'do' => OptionParser.new do |opts|
-    opts.banner = 'todo do <name> <text...>'
+    opts.banner = 'todo do [name] [text...]'
     opts.separator ''
     opts.separator 'Add a new item to the named todo list.'
     opts.separator 'Multiple words are joined with spaces (like `echo`)'
@@ -70,6 +70,10 @@ def prompt_name
   PROMPT.select('Select a todo list', Todo.find_lists)
 end
 
+def prompt_todo_text
+  PROMPT.ask('What do you need to do?')
+end
+
 # CLI Parsing / main logic
 GLOBAL_COMMAND.order!
 subcommand = ARGV.shift
@@ -80,7 +84,11 @@ case subcommand
 when 'do'
   name = ARGV.shift
   name = prompt_name if name.nil?
-  text = ARGV.join(' ')
+  text = if ARGV.empty?
+           prompt_todo_text
+         else
+           ARGV.join(' ')
+         end
   todo = Todo.load_list(name)
   todo.add!(text)
   Todo.save_list(name, todo)
