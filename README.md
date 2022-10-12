@@ -14,3 +14,9 @@ This is a simple CLI application that manages a todo lists in YAML format in fil
 and add a new item to `$HOME/.todo/<name>.yaml`.
 
 `todo did` allows you to complete todo list items.
+
+## Installation
+
+```bash
+gem install todo --source "https://rubygems.pkg.github.com/spenserblack"
+```
