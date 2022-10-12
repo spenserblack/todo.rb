@@ -8,6 +8,7 @@ HELP_TEXT = <<~HELP
   Subcommands:
     do    :                 Add a new item to a todo list.
     did   :                 Complete an item in a todo list.
+    list  :                 List all todo lists.
     show  :                 Show a todo list.
 HELP
 
@@ -32,6 +33,15 @@ subcommands = {
     opts.banner = 'todo did [options] <name> <index> [<index> ...]'
     opts.separator ''
     opts.separator 'Complete one or more items in the named todo list.'
+    opts.on('-h', '--help', 'Show this help message') do
+      puts opts
+      exit
+    end
+  end,
+  'list' => OptionParser.new do |opts|
+    opts.banner = 'todo list'
+    opts.separator ''
+    opts.separator 'List all todo lists.'
     opts.on('-h', '--help', 'Show this help message') do
       puts opts
       exit
@@ -69,6 +79,8 @@ when 'did'
   todo = Todo.load_list(name)
   todo.complete!(*indices)
   Todo.save_list(name, todo)
+when 'list'
+  puts(Todo.find_lists)
 when 'show'
   name = ARGV.shift
   todo = Todo.load_list(name)

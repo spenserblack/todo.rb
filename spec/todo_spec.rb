@@ -47,4 +47,16 @@ RSpec.describe Todo do
       end
     end
   end
+
+  describe '#find_lists' do
+    context 'when "foo.yaml" and "bar.yaml" exist' do
+      before do
+        allow(Dir).to receive(:glob).and_return %w[foo.yaml bar.yaml]
+      end
+
+      it 'returns ["foo", "bar"]' do
+        expect(described_class.find_lists).to eq %w[foo bar]
+      end
+    end
+  end
 end
