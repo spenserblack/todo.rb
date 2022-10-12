@@ -58,6 +58,10 @@ class Todo
     File.join todo_dir, "#{name}.yaml"
   end
 
+  def self.find_lists
+    Dir.glob("#{todo_dir}/*.yaml").map { |file| File.basename(file, '.yaml') }
+  end
+
   def self.load_list(name)
     FileUtils.mkdir_p todo_dir
     File.write filename(name), YAML.dump(TodoList.new([]).to_h) unless File.exist? filename(name)
