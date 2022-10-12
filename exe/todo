@@ -34,7 +34,7 @@ SUBCOMMANDS = {
     end
   end,
   'did' => OptionParser.new do |opts|
-    opts.banner = 'todo did [options] <name> <index> [<index> ...]'
+    opts.banner = 'todo did [options] [name] [index...]'
     opts.separator ''
     opts.separator 'Complete one or more items in the named todo list.'
     opts.on('-h', '--help', 'Show this help message') do
@@ -74,6 +74,14 @@ def prompt_todo_text
   PROMPT.ask('What do you need to do?')
 end
 
+def prompt_todo_indices(todo_list)
+  PROMPT.multi_select 'What did you do?' do |menu|
+    todo_list.items.each_with_index do |todo, index|
+      menu.choice todo, index
+    end
+  end
+end
+
 # CLI Parsing / main logic
 GLOBAL_COMMAND.order!
 subcommand = ARGV.shift
@@ -95,8 +103,12 @@ when 'do'
 when 'did'
   name = ARGV.shift
   name = prompt_name if name.nil?
-  indices = ARGV.map(&:to_i)
   todo = Todo.load_list(name)
+  indices = if ARGV.empty?
+              prompt_todo_indices(todo)
+            else
+              ARGV.map(&:to_i)
+            end
   todo.complete!(*indices)
   Todo.save_list(name, todo)
 when 'list'
