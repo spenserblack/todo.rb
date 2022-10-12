@@ -27,4 +27,7 @@ Gem::Specification.new do |spec|
   spec.require_paths         = ['lib']
 
   spec.metadata['rubygems_mfa_required'] = 'true'
+
+  # Sets repository to publish to
+  spec.metadata['github_repo'] = 'ssh://github.com/spenserblack/todo.rb'
 end
