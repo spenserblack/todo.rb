@@ -13,6 +13,11 @@ class Todo
       @completed_items = completed_items
     end
 
+    # Adds a new item to do.
+    def add!(item)
+      @items << item
+    end
+
     # Completes one or more items, returning a new TodoList.
     def complete(item_index, *other_item_indexes)
       indices = Set.new([item_index, *other_item_indexes])

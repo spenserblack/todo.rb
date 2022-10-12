@@ -3,6 +3,21 @@
 require 'todo'
 
 RSpec.describe Todo do
+  describe Todo::TodoList, '#add!' do
+    context 'when there are 2 items, no complete items' do
+      todo = described_class.new(%w[foo bar])
+      todo.add! 'baz'
+
+      it 'adds an item' do
+        expect(todo.items).to eq %w[foo bar baz]
+      end
+
+      it 'does not change completed items' do
+        expect(todo.completed_items).to eq []
+      end
+    end
+  end
+
   describe Todo::TodoList, '#complete' do
     context 'when the 2nd of the items is moved to a list of 3 completed items' do
       todo = described_class.new %w[a b c], %w[x y z]
