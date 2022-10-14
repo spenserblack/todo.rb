@@ -115,4 +115,20 @@ RSpec.describe Todo do
       end
     end
   end
+
+  describe Todo::TodoDir, '#save_list' do
+    let!(:tmpdir) { Dir.mktmpdir }
+
+    after do
+      FileUtils.remove_entry tmpdir
+    end
+
+    it 'saves the list' do
+      dir = described_class.new tmpdir
+      f = dir.save_list 'foo', Todo::TodoList.new(%w[a b c], %w[x y z])
+      expected = { 'todo' => %w[a b c], 'done' => %w[x y z] }
+      f.seek 0
+      expect(YAML.load_file(f)).to eq expected
+    end
+  end
 end
