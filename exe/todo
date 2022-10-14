@@ -16,6 +16,8 @@ HELP_TEXT = <<~HELP
     show  :                 Show a todo list.
 HELP
 
+TODO_DIR = Todo::TodoDir.new
+
 GLOBAL_COMMAND = OptionParser.new do |opts|
   opts.banner = 'Usage: todo [options] [subcommand [options] [args]]'
   opts.separator ''
@@ -67,7 +69,7 @@ def prompt_subcommand
 end
 
 def prompt_name
-  PROMPT.select('Select a todo list', Todo.find_lists)
+  PROMPT.select('Select a todo list', TODO_DIR.find_lists)
 end
 
 def prompt_todo_text
@@ -97,26 +99,26 @@ when 'do'
          else
            ARGV.join(' ')
          end
-  todo = Todo.load_list(name)
+  todo = TODO_DIR.load_list(name)
   todo.add!(text)
-  Todo.save_list(name, todo)
+  TODO_DIR.save_list(name, todo)
 when 'did'
   name = ARGV.shift
   name = prompt_name if name.nil?
-  todo = Todo.load_list(name)
+  todo = TODO_DIR.load_list(name)
   indices = if ARGV.empty?
               prompt_todo_indices(todo)
             else
               ARGV.map(&:to_i)
             end
   todo.complete!(*indices)
-  Todo.save_list(name, todo)
+  TODO_DIR.save_list(name, todo)
 when 'list'
-  puts(Todo.find_lists)
+  puts TODO_DIR.find_lists
 when 'show'
   name = ARGV.shift
   name = prompt_name if name.nil?
-  todo = Todo.load_list(name)
+  todo = TODO_DIR.load_list(name)
   puts todo
 else
   puts global_command
