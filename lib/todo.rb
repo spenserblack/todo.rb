@@ -66,7 +66,7 @@ class Todo
     FileUtils.mkdir_p todo_dir
     File.write filename(name), YAML.dump(TodoList.new([]).to_h) unless File.exist? filename(name)
     list = YAML.load_file(filename(name))
-    TodoList.new(list['todo'] || [], list['done'] || [])
+    TodoList.new(list.fetch('todo', []), list.fetch('done', []))
   end
 
   def self.save_list(name, list)
