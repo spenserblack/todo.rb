@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'fileutils'
+require 'tmpdir'
+require 'yaml'
 require 'todo'
 
 RSpec.describe Todo do
@@ -67,6 +70,48 @@ RSpec.describe Todo do
 
       it 'returns ["foo", "bar"]' do
         expect(dir.find_lists).to eq %w[foo bar]
+      end
+    end
+  end
+
+  describe Todo::TodoDir, '#load_list' do
+    context 'when the desired file does not exist' do
+      let!(:tmpdir) { Dir.mktmpdir }
+
+      after do
+        FileUtils.remove_entry tmpdir
+      end
+
+      it 'has empty pending todos' do
+        dir = described_class.new tmpdir
+        expect(dir.load_list('foo').items).to eq []
+      end
+
+      it 'has empty completed todos' do
+        dir = described_class.new tmpdir
+        expect(dir.load_list('foo').completed_items).to eq []
+      end
+    end
+
+    context 'when "foo.yaml" does exist' do
+      let!(:tmpdir) { Dir.mktmpdir }
+
+      before do
+        YAML.dump({ 'todo' => %w[a b c], 'done' => %w[x y z] }, File.open(File.join(tmpdir, 'foo.yaml'), 'w')).flush
+      end
+
+      after do
+        FileUtils.remove_entry tmpdir
+      end
+
+      it 'has pending todos' do
+        dir = described_class.new tmpdir
+        expect(dir.load_list('foo').items).to eq %w[a b c]
+      end
+
+      it 'has completed todos' do
+        dir = described_class.new tmpdir
+        expect(dir.load_list('foo').completed_items).to eq %w[x y z]
       end
     end
   end
