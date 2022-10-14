@@ -52,6 +52,26 @@ RSpec.describe Todo do
     end
   end
 
+  describe Todo::TodoList, '#to_yaml' do
+    context 'when there are 2 items, no complete items' do
+      let!(:todo) { described_class.new(%w[foo bar]) }
+
+      it 'returns a YAML string' do
+        expect(todo.to_yaml).to eq "---\ntodo:\n- foo\n- bar\ndone: []\n"
+      end
+    end
+  end
+
+  describe Todo::TodoList, '#to_s' do
+    context 'when there are 2 items, no complete items' do
+      let!(:todo) { described_class.new(%w[foo bar]) }
+
+      it 'returns a YAML string' do
+        expect(todo.to_s).to eq "---\ntodo:\n- foo\n- bar\ndone: []\n"
+      end
+    end
+  end
+
   describe Todo::TodoDir, '#list_path' do
     context 'when dir is /tmp/todo' do
       let(:dir) { described_class.new '/tmp/todo' }
