@@ -50,26 +50,31 @@ class Todo
     end
   end
 
-  def self.todo_dir
-    File.join Dir.home, '.todo'
-  end
+  # Represents the directory where the to do files are stored.
+  class TodoDir
+    attr_reader :dir
 
-  def self.filename(name)
-    File.join todo_dir, "#{name}.yaml"
-  end
+    def initialize(dir = File.join(Dir.home, '.todo'))
+      @dir = dir
+    end
 
-  def self.find_lists
-    Dir.glob("#{todo_dir}/*.yaml").map { |file| File.basename(file, '.yaml') }
-  end
+    def list_path(name)
+      File.join dir, "#{name}.yaml"
+    end
 
-  def self.load_list(name)
-    FileUtils.mkdir_p todo_dir
-    File.write filename(name), YAML.dump(TodoList.new([]).to_h) unless File.exist? filename(name)
-    list = YAML.load_file(filename(name))
-    TodoList.new(list.fetch('todo', []), list.fetch('done', []))
-  end
+    def find_lists
+      Dir.glob("#{dir}/*.yaml").map { |file| File.basename(file, '.yaml') }
+    end
 
-  def self.save_list(name, list)
-    YAML.dump(list.to_h, File.open(filename(name), 'w'))
+    def load_list(name)
+      FileUtils.mkdir_p dir
+      File.write list_path(name), YAML.dump(TodoList.new([]).to_h) unless File.exist? list_path(name)
+      list = YAML.load_file(list_path(name))
+      TodoList.new(list.fetch('todo', []), list.fetch('done', []))
+    end
+
+    def save_list(name, list)
+      YAML.dump(list.to_h, File.open(list_path(name), 'w'))
+    end
   end
 end
